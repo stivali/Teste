@@ -1,0 +1,104 @@
+/**************************************************/
+/****  Junta as bases de domicílos e pessoas de ***/
+/****  cada ano e exporta para o Stata          ***/
+/**************************************************/
+
+
+libname pnad "C:\data\PNAD\SAS";	
+
+
+/************** 1998 *****************/
+proc sort data = pnad.pes1998;
+	by v0101 UF v0102 v0103;
+run;
+proc sort data = pnad.dom1998;
+	by v0101 UF v0102 v0103;
+run;
+
+data pnad1998;
+	merge pnad.pes1998 (in=A) pnad.dom1998 (in=B);
+		by v0101 UF v0102 v0103;
+	if A=1 and B=1;
+run;
+
+
+PROC EXPORT DATA= pnad1998
+            OUTFILE= "C:\data\PNAD\Stata\pnad1998.dta" 
+            DBMS=STATA REPLACE;
+RUN;
+
+
+/************** 2003 *****************/
+proc sort data = pnad.pes2003;
+	by v0101 v0102 v0103;
+run;
+proc sort data = pnad.dom2003;
+	by v0101 v0102 v0103;
+run;
+
+data pnad2003;
+	merge pnad.pes2003 (in=A) pnad.dom2003 (in=B);
+		by v0101 v0102 v0103;
+	if A=1 and B=1;
+run;
+
+
+PROC EXPORT DATA= pnad2003
+            OUTFILE= "C:\data\PNAD\Stata\pnad2003.dta" 
+            DBMS=STATA REPLACE;
+RUN;
+
+
+/************** 2008 *****************/
+proc sort data = pnad.pes2008;
+	by v0101 v0102 v0103;
+run;
+proc sort data = pnad.dom2008;
+	by v0101 v0102 v0103;
+run;
+
+data pnad2008;
+	merge pnad.pes2008 (in=A) pnad.dom2008 (in=B);
+		by v0101 v0102 v0103;
+	if A=1 and B=1;
+run;
+
+
+PROC EXPORT DATA= pnad2008
+            OUTFILE= "C:\data\PNAD\Stata\pnad2008.dta" 
+            DBMS=STATA REPLACE;
+RUN;
+
+
+
+/****************************************************************/
+/***** 						PNS							   ******/
+/****************************************************************/
+data pess;
+	set pnad.pessoas_pns2013;
+run;
+
+proc sort data = pess;
+	by V0001 V0024 UPA_PNS V0006_PNS;
+run;
+
+data dom;
+	set pnad.domicilios_pns2013;
+run;
+
+proc sort data = dom;
+	by V0001 V0024 UPA_PNS V0006_PNS;
+run;
+
+
+data pns2013;
+	merge pess (in=A) dom (in=B);
+		by V0001 V0024 UPA_PNS V0006_PNS;
+	if A=1 and B=1;
+run;
+
+
+PROC EXPORT DATA= pns2013
+            OUTFILE= "C:\data\PNAD\Stata\pns2013.dta" 
+            DBMS=STATA REPLACE;
+RUN;
